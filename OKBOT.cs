@@ -101,12 +101,7 @@ namespace cAlgo.Robots
                 }
 
 
-
-                double sl = 30;
-                double tp = 20;
-
-
-                var result = ExecuteMarketOrder(tradeType, positionInfo.symbol, Symbol.QuantityToVolumeInUnits(positionInfo.quantity * getCoeficient(positionInfo.symbol)), positionInfo.label, sl, tp, positionInfo.comment);
+                var result = ExecuteMarketOrder(tradeType, positionInfo.symbol, Symbol.QuantityToVolumeInUnits(positionInfo.quantity * getCoeficient(positionInfo.symbol)), positionInfo.label, positionInfo.stopLoss, positionInfo.takeProfit, positionInfo.comment);
 
                 if (result.IsSuccessful)
                 {
