@@ -79,7 +79,7 @@ namespace cAlgo.Robots
 
                 foreach (var p in Positions)
                 {
-                    if (string.Equals(positionInfo.symbol, p.SymbolName, StringComparison.InvariantCultureIgnoreCase))
+                    if (string.Equals(positionInfo.symbol, p.SymbolName))
                     {
                         throw new Exception("There is already an open position for symbol: " + p.SymbolName);
                     }
@@ -87,17 +87,17 @@ namespace cAlgo.Robots
 
                 var tradeType = TradeType.Buy;
 
-                if (string.Equals(request.positionInfo.tradeType, "SELL", StringComparison.InvariantCultureIgnoreCase))
+                if (string.Equals(positionInfo.tradeType, "SELL"))
                 {
                     tradeType = TradeType.Sell;
                 }
-                else if (string.Equals(request.positionInfo.tradeType, "BUY", StringComparison.InvariantCultureIgnoreCase))
+                else if (string.Equals(positionInfo.tradeType, "BUY"))
                 {
                     tradeType = TradeType.Buy;
                 }
                 else
                 {
-                    throw new Exception("Invalid trade type: " + request.positionInfo.tradeType);
+                    throw new Exception("Invalid trade type: " + positionInfo.tradeType);
                 }
 
 
