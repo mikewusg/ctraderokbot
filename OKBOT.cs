@@ -147,7 +147,7 @@ namespace cAlgo.Robots
             double grossProf = 0;
             int avarageProf = 25;
 
-            if (symbol.Equals("XAUUSD"))
+            if (symbol.Name.Equals("XAUUSD"))
             {
                 avarageProf = 500;
             }
