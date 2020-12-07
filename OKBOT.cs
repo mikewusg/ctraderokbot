@@ -160,10 +160,10 @@ namespace cAlgo.Robots
             if (failureCount == 1)
                 return 2;
             if (failureCount == 2)
-                return 4;
+                return 5;
             if (failureCount == 3)
-                return 8;
-            return 1;
+                return 13;
+            return 13;
 
         }
 
