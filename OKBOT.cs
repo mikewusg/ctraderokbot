@@ -100,14 +100,19 @@ namespace cAlgo.Robots
                     throw new Exception("Invalid trade type: " + positionInfo.tradeType);
                 }
 
-                double sl = 30;
-                double tp = 20;
 
-                if (string.Equals(positionInfo.symbol, "XAUUSD"))
+                Symbol symbol = Symbols.GetSymbol(positionInfo.symbol);
+                double askPrice = symbol.Ask;
+                double bidPrice = symbol.Bid;
+
+                double? sl = null;
+                double? tp = null;
+
+                if (positionInfo.takeProfit != null)
                 {
-                    sl = 600;
-                    tp = 450;
+                    tp = Math.Round((Math.Min(Math.Abs(positionInfo.takeProfit.Value - askPrice), Math.Abs(positionInfo.takeProfit.Value - bidPrice))) / symbol.PipSize);
                 }
+                sl = Math.Round((Math.Max(Math.Abs(positionInfo.stopLoss - askPrice), Math.Abs(positionInfo.stopLoss - bidPrice))) / symbol.PipSize);
 
                 var result = ExecuteMarketOrder(tradeType, positionInfo.symbol, Symbol.QuantityToVolumeInUnits(positionInfo.quantity * getCoeficient(positionInfo.symbol)), positionInfo.label, sl, tp, positionInfo.comment);
 
