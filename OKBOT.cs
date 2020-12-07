@@ -114,7 +114,7 @@ namespace cAlgo.Robots
                 }
                 sl = Math.Round((Math.Max(Math.Abs(positionInfo.stopLoss - askPrice), Math.Abs(positionInfo.stopLoss - bidPrice))) / symbol.PipSize);
 
-                var result = ExecuteMarketOrder(tradeType, positionInfo.symbol, Symbol.QuantityToVolumeInUnits(positionInfo.quantity * getCoeficient(positionInfo.symbol)), positionInfo.label, sl, tp, positionInfo.comment);
+                var result = ExecuteMarketOrder(tradeType, positionInfo.symbol, Symbol.QuantityToVolumeInUnits(positionInfo.quantity * getCoeficient(symbol)), positionInfo.label, sl, tp, positionInfo.comment);
 
                 if (result.IsSuccessful)
                 {
@@ -132,27 +132,34 @@ namespace cAlgo.Robots
             }
         }
 
-        private int getCoeficient(string symbol)
+        private int getCoeficient(Symbol symbol)
         {
             var historyList = new List<HistoricalTrade>();
 
             foreach (HistoricalTrade trade in History)
             {
-                if (string.Equals(symbol, trade.SymbolName))
+                if (string.Equals(symbol.Name, trade.SymbolName))
                 {
                     historyList.Add(trade);
                 }
             }
 
+            double grossProf = 0;
+            int avarageProf = 25;
 
-            int failureCount = 0;
+            if (symbol.Equals("XAUUSD"))
+            {
+                avarageProf = 500;
+            }
 
             for (int i = historyList.Count - 1; i >= 0; i--)
             {
                 HistoricalTrade trade = historyList[i];
+
                 if (trade.GrossProfit < 0)
                 {
-                    failureCount++;
+                    grossProf += trade.GrossProfit;
+
                 }
                 else
                 {
@@ -160,16 +167,18 @@ namespace cAlgo.Robots
                 }
             }
 
-            if (failureCount == 0)
-                return 1;
-            if (failureCount == 1)
-                return 2;
-            if (failureCount == 2)
-                return 5;
-            if (failureCount == 3)
-                return 13;
-            return 13;
 
+            grossProf = Math.Abs(grossProf);
+
+
+            int coef = (int)Math.Ceiling((grossProf / symbol.PipValue) / avarageProf);
+
+            if (coef <= 1)
+                return 1;
+            if (coef >= 10)
+                return 10;
+
+            return coef;
         }
 
         private void closePositionRequest(ClosePositionRequest request)
