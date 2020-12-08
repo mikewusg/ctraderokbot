@@ -134,6 +134,7 @@ namespace cAlgo.Robots
 
         private int getCoeficient(Symbol symbol)
         {
+
             var historyList = new List<HistoricalTrade>();
 
             foreach (HistoricalTrade trade in History)
@@ -144,12 +145,12 @@ namespace cAlgo.Robots
                 }
             }
 
-            double grossProf = 0;
-            int avarageProf = 25;
+            double loss = 0;
+            int averageTP = 25;
 
             if (symbol.Name.Equals("XAUUSD"))
             {
-                avarageProf = 500;
+                averageTP = 500;
             }
 
             for (int i = historyList.Count - 1; i >= 0; i--)
@@ -158,7 +159,7 @@ namespace cAlgo.Robots
 
                 if (trade.GrossProfit < 0)
                 {
-                    grossProf += trade.GrossProfit;
+                    loss += trade.GrossProfit;
 
                 }
                 else
@@ -168,15 +169,20 @@ namespace cAlgo.Robots
             }
 
 
-            grossProf = Math.Abs(grossProf);
+            loss = Math.Abs(loss);
 
 
-            int coef = (int)Math.Ceiling((grossProf / symbol.PipValue) / avarageProf);
+            int coef = (int)Math.Ceiling(loss / (averageTP * 1000 * symbol.PipValue));
+            if (symbol.Name.Equals("XAUUSD"))
+            {
+                coef = (int)Math.Ceiling(loss / (averageTP * symbol.PipValue));
+            }
+
 
             if (coef <= 1)
                 return 1;
-            if (coef >= 10)
-                return 10;
+            if (coef >= 12)
+                return 12;
 
             return coef;
         }
